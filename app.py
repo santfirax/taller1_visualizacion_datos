@@ -2078,7 +2078,7 @@ def main() -> None:
     with climate_tab:
         st.subheader("El Nino 2023-2024: dependencia termica y costo en CO2")
         st.caption(
-            "Esta vista usa tablas `gold`: `emisiones_sin_diario|mensual` para el CO2 real del SIN, "
+            "Esta vista usa tablas `gold`: `emisiones_sin_diario|mensual` para el CO2 real del Sistema Interconectado Nacional, "
             "`generacion` para el mix por tecnologia, `co2_tasa_planta_mes` para los emisores lideres "
             "y `demanda_real_hourly` para el ratio hidrologico vs media."
         )
@@ -2144,7 +2144,7 @@ def main() -> None:
                     missing_mix_periods.head(4).map(lambda value: _format_period_label(value, climate_granularity))
                 )
                 st.info(
-                    "Hay periodos con emisiones del SIN pero sin detalle de mix en `gold.generacion`: "
+                    "Hay periodos con emisiones del Sistema Interconectado Nacional pero sin detalle de mix en `gold.generacion`: "
                     f"{missing_labels}. Esos cortes salen en la serie de CO2, pero no en el calculo del share termico."
                 )
 
@@ -2241,7 +2241,7 @@ def main() -> None:
                 ),
             )
             metric_columns[3].metric(
-                "Pico de emisiones del SIN",
+                "Pico de emisiones del Sistema Interconectado Nacional",
                 (
                     _format_number(float(peak_emissions_row["emisiones_tco2"]), 0, " tCO2")
                     if peak_emissions_row is not None
@@ -2259,7 +2259,7 @@ def main() -> None:
                 insights.append(
                     f"- El quiebre aparece en `{_format_period_label(trigger_period, climate_granularity)}`, "
                     f"cuando la participacion termica suavizada supera el baseline de {_format_number(baseline_share_pct, 1, '%')} "
-                    f"y el CO2 del SIN supera el baseline de {_format_number(baseline_emissions_tco2, 0, ' tCO2')} por periodo."
+                    f"y el CO2 del Sistema Interconectado Nacional supera el baseline de {_format_number(baseline_emissions_tco2, 0, ' tCO2')} por periodo."
                 )
             if peak_additional_row is not None:
                 insights.append(
@@ -2268,7 +2268,7 @@ def main() -> None:
                 )
             if peak_emissions_row is not None:
                 insights.append(
-                    f"- El pico absoluto de emisiones del SIN ocurre en `{_format_period_label(peak_emissions_row['periodo'], climate_granularity)}` "
+                    f"- El pico absoluto de emisiones del Sistema Interconectado Nacional ocurre en `{_format_period_label(peak_emissions_row['periodo'], climate_granularity)}` "
                     f"con {_format_number(float(peak_emissions_row['emisiones_tco2']), 0, ' tCO2')}."
                 )
             if hydrology_available and "ratio_hidrologico" in climate_summary_df.columns:
@@ -2305,10 +2305,10 @@ def main() -> None:
             emissions_chart.add_scatter(
                 x=climate_summary_df["periodo"],
                 y=climate_summary_df["emisiones_tco2"],
-                name="CO2 real del SIN",
+                name="CO2 real del Sistema<br>Interconectado Nacional",
                 mode="lines",
                 line=dict(color="#1d4ed8", width=3),
-                hovertemplate="%{x|%Y-%m-%d}<br>CO2 SIN: %{y:,.0f} t<extra></extra>",
+                hovertemplate="%{x|%Y-%m-%d}<br>CO2 Sistema Interconectado Nacional: %{y:,.0f} t<extra></extra>",
             )
             if baseline_emissions_tco2 is not None and not pd.isna(baseline_emissions_tco2):
                 emissions_chart.add_hline(
@@ -2342,11 +2342,13 @@ def main() -> None:
                     font=dict(color="#dc2626"),
                 )
             emissions_chart.update_layout(
-                title="Cuando se dispararon las emisiones del SIN",
+                title="Cuando se dispararon las emisiones del<br>Sistema Interconectado Nacional",
                 barmode="overlay",
                 hovermode="x unified",
                 yaxis_title="tCO2 por periodo",
                 xaxis_title="Periodo",
+                legend=dict(orientation="h", yanchor="top", y=-0.22, xanchor="left", x=0),
+                margin=dict(b=110),
             )
             climate_left.plotly_chart(emissions_chart, width="stretch")
 
@@ -2407,11 +2409,10 @@ def main() -> None:
                 y="energia_gwh",
                 color="bucket",
                 category_orders={"bucket": GENERATION_BUCKET_ORDER},
-                title="Mix de generacion del SIN durante el evento",
+                title="Mix de generacion del<br>Sistema Interconectado Nacional durante el evento",
                 labels={"energia_gwh": "Energia (GWh)", "bucket": "Tecnologia"},
             )
             _add_time_window_highlight(mix_chart, event_highlight_start, event_highlight_end)
-            mix_chart.update_xaxes(rangeslider_visible=True)
             lower_left.plotly_chart(mix_chart, width="stretch")
 
             if not climate_drivers_df.empty:
@@ -2471,7 +2472,7 @@ def main() -> None:
                         "periodo": "Periodo",
                         "participacion_termica_pct": "Participacion termica (%)",
                         "co2_adicional_ton": "CO2 adicional (t)",
-                        "emisiones_tco2": "CO2 SIN (t)",
+                        "emisiones_tco2": "CO2 Sistema Interconectado Nacional (t)",
                     }
                 )
                 lower_right.dataframe(
@@ -2479,7 +2480,7 @@ def main() -> None:
                         {
                             "Participacion termica (%)": "{:.1f}",
                             "CO2 adicional (t)": "{:,.0f}",
-                            "CO2 SIN (t)": "{:,.0f}",
+                            "CO2 Sistema Interconectado Nacional (t)": "{:,.0f}",
                         }
                     ),
                     width="stretch",
@@ -2487,11 +2488,11 @@ def main() -> None:
 
             with st.expander("Metodologia de la estimacion", expanded=False):
                 st.markdown(
-                    "1. `emisiones_sin_diario` o `emisiones_sin_mensual` aporta el CO2 real del SIN por periodo.\n"
+                    "1. `emisiones_sin_diario` o `emisiones_sin_mensual` aporta el CO2 real del Sistema Interconectado Nacional por periodo.\n"
                     "2. `generacion` aporta el mix de energia por tecnologia y permite medir la participacion termica.\n"
                     "3. El `baseline` es el promedio hasta la fecha de corte preevento que selecciones.\n"
                     "4. El `CO2 adicional del mix` atribuye a la dependencia termica la fraccion del CO2 observada que excede la participacion termica promedio del baseline.\n"
-                    "5. En terminos simples: si el share termico sube frente al baseline, se imputa como costo incremental la porcion equivalente del CO2 real del SIN.\n"
+                    "5. En terminos simples: si el share termico sube frente al baseline, se imputa como costo incremental la porcion equivalente del CO2 real del Sistema Interconectado Nacional.\n"
                     "6. `co2_tasa_planta_mes` se usa para identificar que plantas o combustibles explican el sobrecosto en CO2."
                 )
 
