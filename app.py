@@ -2306,7 +2306,7 @@ def main() -> None:
                 x=climate_summary_df["periodo"],
                 y=climate_summary_df["emisiones_tco2"],
                 name="CO2 real del SIN",
-                mode="lines+markers",
+                mode="lines",
                 line=dict(color="#1d4ed8", width=3),
                 hovertemplate="%{x|%Y-%m-%d}<br>CO2 SIN: %{y:,.0f} t<extra></extra>",
             )
@@ -2356,7 +2356,7 @@ def main() -> None:
                 x=climate_summary_df["periodo"],
                 y=climate_summary_df["participacion_termica_pct"],
                 name="Participacion termica",
-                mode="lines+markers",
+                mode="lines",
                 line=dict(color="#b91c1c", width=3),
                 secondary_y=False,
             )
@@ -2382,11 +2382,15 @@ def main() -> None:
                     x=climate_summary_df["periodo"],
                     y=climate_summary_df["ratio_hidrologico"] * 100,
                     name="Aportes / media historica",
-                    mode="lines+markers",
+                    mode="lines",
                     line=dict(color="#0369a1", width=2, dash="dot"),
                     secondary_y=True,
                 )
-                dependency_chart.update_yaxes(title_text="Aportes vs media (%)", secondary_y=True)
+                dependency_chart.update_yaxes(
+                    title_text="",
+                    showticklabels=False,
+                    secondary_y=True,
+                )
             dependency_chart.update_layout(
                 title="Dependencia termica frente al pulso hidrologico",
                 hovermode="x unified",
