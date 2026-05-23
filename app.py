@@ -2305,7 +2305,7 @@ def main() -> None:
             emissions_chart.add_scatter(
                 x=climate_summary_df["periodo"],
                 y=climate_summary_df["emisiones_tco2"],
-                name="CO2 real del Sistema<br>Interconectado Nacional",
+                name="CO2 real del sistema",
                 mode="lines",
                 line=dict(color="#1d4ed8", width=3),
                 hovertemplate="%{x|%Y-%m-%d}<br>CO2 Sistema Interconectado Nacional: %{y:,.0f} t<extra></extra>",
@@ -2316,6 +2316,12 @@ def main() -> None:
                     line_dash="dash",
                     line_color="#64748b",
                     annotation_text="Baseline preevento",
+                    annotation_position="top left",
+                    annotation_font_color="#64748b",
+                    annotation_font_size=15,
+                    annotation_bgcolor="rgba(248, 250, 252, 0.88)",
+                    annotation_bordercolor="#94a3b8",
+                    annotation_borderpad=4,
                 )
             if trigger_period is not None:
                 trigger_y_max = float(
@@ -2342,13 +2348,13 @@ def main() -> None:
                     font=dict(color="#dc2626"),
                 )
             emissions_chart.update_layout(
-                title="Cuando se dispararon las emisiones del<br>Sistema Interconectado Nacional",
+                title="Emisiones del Sistema Interconectado Nacional",
                 barmode="overlay",
                 hovermode="x unified",
                 yaxis_title="tCO2 por periodo",
                 xaxis_title="Periodo",
-                legend=dict(orientation="h", yanchor="top", y=-0.22, xanchor="left", x=0),
-                margin=dict(b=110),
+                legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=1.02),
+                margin=dict(r=170, b=40),
             )
             climate_left.plotly_chart(emissions_chart, width="stretch")
 
@@ -2409,7 +2415,7 @@ def main() -> None:
                 y="energia_gwh",
                 color="bucket",
                 category_orders={"bucket": GENERATION_BUCKET_ORDER},
-                title="Mix de generacion del<br>Sistema Interconectado Nacional durante el evento",
+                title="Mix de generacion del Sistema Interconectado Nacional",
                 labels={"energia_gwh": "Energia (GWh)", "bucket": "Tecnologia"},
             )
             _add_time_window_highlight(mix_chart, event_highlight_start, event_highlight_end)
